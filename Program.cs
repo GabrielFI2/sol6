@@ -157,3 +157,187 @@ class Pajaro : Animal , IVolador
     }
 
 }
+interface IPago
+{
+    //Metodo Interfaz
+    public void ProcesarPago()
+    {
+
+    }
+
+}
+
+
+
+class PagoEfectivo : IPago
+{
+    //propiedades
+    
+    public double Monto { get; set; }
+
+    //constructor
+    // vas a recibir un parametro dentro de tu propiedad
+    public  PagoEfectivo( double monto)
+    {
+        Monto = monto;
+    }
+    //Mentodo de pago Interfaz
+    public void ProcesarPago()
+    {
+        Console.WriteLine($"Pago en efectivo {Monto} fue procesado");
+    }
+
+}
+
+class PagoTarjeta : IPago
+{
+    //propiedades
+
+    public double Monto { get; set; }
+    //no podemos cambiar el numero de la tarjeta
+    public string NumeroTarjeta { get; }
+    //constructor
+    // vas a recibir un parametro dentro de tu propiedad
+    public PagoTarjeta(double monto, string numeroTarjeta)
+    {
+        Monto = monto;
+        NumeroTarjeta = numeroTarjeta;
+    }
+    //Mentodo de pago Interfaz
+    //igual al nombre de la interfaz
+    public void ProcesarPago()
+    {
+
+        if (NumeroTarjeta.Length == 16)
+        {
+            Console.WriteLine($"Pago en tarjeta {Monto} fue procesado");
+        }
+        else
+        {
+            Console.WriteLine("Tarjeta invalida");
+        }
+    }
+}
+
+
+/* /casteos
+
+//* Conversion implicita
+int numeroEntero = 42;
+double numeroDouble = numeroEntero;
+
+//si cabe porque es mas grande
+
+Console.WriteLine(numeroEntero);
+Console.WriteLine(numeroDouble);
+
+//Conversion explicita
+double numeroDecimal = 42.96;
+int numeroEntero2 = (int)numeroDecimal;
+
+Console.WriteLine(numeroDecimal);
+Console.WriteLine(numeroEntero2);
+//perdida de informacion corta lo que no cabe
+
+//Convert
+
+string numeroTexto = "23";
+string sumaTexto = "1" + numeroTexto;
+int numero = Convert.ToInt32(numeroTexto);
+Console.WriteLine(numero+1);
+//no es tipo de dato primitivo
+
+//PArse solo se utiliza para strings
+/*
+string texto = "3.1416";
+
+    double pi = double.Parse(texto);
+Console.WriteLine(pi);
+Console.WriteLine(pi*2);
+//Parse evita excepint.ciones
+int piEntero;
+bool exito = int.TryParse(texto, out 
+    )
+bool exito = int. TryParse(numeroTexto,
+int piEntero = int.TryParse(texto, out piEntero);
+Console.WriteLine(piEntero);
+*
+//Casteo de objetos
+
+//DownC 
+
+//conversiones por tipos de referencia
+
+object obj = "Hola mundo";
+string texto2 = obj as string;
+
+Console.WriteLine(texto2);
+
+*/ 
+//lista de pagos a procesar
+
+List <IPago>  listaPagos = new List <IPago> ();
+//do
+//{
+    Console.WriteLine("Ingresa ek monto a pagar");
+    string montoTexto = Console.ReadLine() ?? "";
+
+    //convertir string  a double
+    double montoNumero;
+    if (double.TryParse(montoTexto, out montoNumero))
+    {
+        Console.WriteLine("¿Es un pafo con tarjeta y/n");
+        string opcion = Console.ReadLine() ?? "";
+
+        if (opcion == "y")
+        {
+            Console.WriteLine("Ingresa el numero de tarjeta");
+
+            string tarjeta = Console.ReadLine() ?? "";
+
+            //Crear el objeto pagotarqjeta
+            IPago pago = new PagoTarjeta(montoNumero, tarjeta);
+
+            listaPagos.Add(pago);
+        }
+
+        else
+        {
+            //objeto pado en efectivo
+            IPago pago = new PagoEfectivo(montoNumero);
+
+            listaPagos.Add(pago);
+
+        }
+    }
+    else
+    {
+        Console.WriteLine("Monto invalido, ocurrio un error");
+        return;
+    }
+    Console.WriteLine("¿Es un pafo con tarjeta y/n");
+   // string op = Console.ReadLine() ?? "";
+//} while(op == "r");
+
+//do
+Console.WriteLine("Procesando ....");
+//Recorrer la lista de pagos
+foreach (IPago pago in listaPagos)
+{
+    //Casteo con AS
+    PagoTarjeta pagoTarjeta = pago as PagoTarjeta;
+    
+    if (pagoTarjeta != null)
+    {
+        Console.WriteLine("Verificando tarjeta....");
+        pago.ProcesarPago();
+    }
+    else
+    {
+        PagoEfectivo pagoEfectivo = pago as PagoEfectivo;
+        Console.WriteLine("Verificando pafo en efectivo....");
+        pago.ProcesarPago();
+
+    }
+
+}
